@@ -42,7 +42,7 @@ const fetchUserIds = () => (dispatch) => {
       type: actions.FETCH_USERS_SUCCESS,
       payload: data
     })
-  }, err => {
+  },() => {
     if (!reran) {
       setTimeout(() => loopFetch(dispatch), 10000)
       reran = true
@@ -69,7 +69,7 @@ const fetchAddresses = (userId) => (dispatch) => {
       type: actions.FETCH_ADDRESS_SUCCESS,
       payload: data
     })
-  }, err => {
+  }, () => {
     return dispatch({
       type: actions.FETCH_ADDRESS_ERROR
     })
