@@ -15,7 +15,8 @@ const actions = {
   FETCH_EVENTS_ERROR: 'fetch_events_error',
   TOGGLE_EVENT_SELECTION: 'toggle_event_selection',
   EVENT_DETAILS_SUCCESS: 'event_details_success',
-  EVENT_DETAILS_ERROR: 'event_details_error'
+  EVENT_DETAILS_ERROR: 'event_details_error',
+  CLEAR_EVENT_COMPARISON: 'clear_event_comparison'
 }
 
 
@@ -90,15 +91,15 @@ const reducer = (state, action) => {
         ...state,
         selectedEvents : events
       }
-    case actions.COMPARE_SELECTED_EVENTS:
-      return {
-        ...state,
-        comparingEvents : true
-      }
     case actions.EVENT_DETAILS_SUCCESS:
       return {
         ...state,
         comparisonJson : action.payload
+      }
+    case actions.CLEAR_EVENT_COMPARISON:
+      return {
+        ...state,
+        comparisonJson: false
       }
     case actions.EVENT_DETAILS_ERROR:
       return {
@@ -119,7 +120,8 @@ const initialState = {
   selectedUserId: null,
   selectedAddressId: null,
   selectedEvents: {},
-  error: null
+  error: null,
+  comparisonJson: false
 }
 
 const store = createStore(reducer, initialState, applyMiddleware(thunk))

@@ -33,6 +33,15 @@ form, .addresses {
   float: right;
   width: 40%;
 }
+.close-dialog {
+  margin-left: auto;
+}
+.MuiDialog-paperWidthSm {
+  padding: 25px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto
+}
 .addresses pre {
   cursor: pointer;
   display: inline-block;
