@@ -3,17 +3,39 @@ import { actions } from './redux-store';
 const API_BASE = 'http://localhost:27606'
 // changed port number, server running on port 27606
 
+let counter = 0
+
+const loopFetch = (dispatch) => {
+  if (counter < 4) {
+    counter = ++counter
+    dispatch(fetchUserIds())
+  }
+}
+
 const fetchUserIds = () => (dispatch) => {
+  let reran = false
   return fetch(`${API_BASE}/user_ids`).then((response) => {
     if (!response.ok) {
-      return dispatch({
-        type: actions.FETCH_USERS_ERROR,
-      })
+      if (response.status > 500 ){
+        return dispatch({
+          type: actions.FETCH_USERS_ERROR,
+        })
+      } else {
+        reran = true
+        setTimeout(() => loopFetch(dispatch), 10000)
+        return dispatch({
+          type: actions.FETCH_USERS_ERROR,
+        })
+      }
     }
 
     return response.json()
     // added () to call .json method to return json object
   }, err => {
+    if (!reran) {
+      setTimeout(() => loopFetch(dispatch), 10000)
+      reran = true
+    }
     throw err
   }).then(data => {
     return dispatch({
@@ -21,6 +43,10 @@ const fetchUserIds = () => (dispatch) => {
       payload: data
     })
   }, err => {
+    if (!reran) {
+      setTimeout(() => loopFetch(dispatch), 10000)
+      reran = true
+    }
     return dispatch({
       type: actions.FETCH_USERS_ERROR
     })
@@ -66,7 +92,7 @@ const fetchEvents = (addressId) => (dispatch) => {
       type: actions.FETCH_EVENTS_SUCCESS,
       payload: data
     })
-  }, err => {
+  }, () => {
     return dispatch({
       type: actions.FETCH_EVENTS_ERROR
     })
