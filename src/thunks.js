@@ -1,6 +1,7 @@
 import { actions } from './redux-store';
 
 const API_BASE = 'http://localhost:27606'
+// changed port number, server running on port 27606
 
 const fetchUserIds = () => (dispatch) => {
   return fetch(`${API_BASE}/user_ids`).then((response) => {
@@ -11,6 +12,7 @@ const fetchUserIds = () => (dispatch) => {
     }
 
     return response.json()
+    // added () to call .json method to return json object
   }, err => {
     throw err
   }).then(data => {
