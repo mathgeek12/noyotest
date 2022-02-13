@@ -7,7 +7,7 @@ let counter = 0
 
 const loopFetch = (dispatch) => {
   if (counter < 4) {
-    counter = ++counter
+    ++counter
     dispatch(fetchUserIds())
   }
 }
@@ -17,24 +17,19 @@ const fetchUserIds = () => (dispatch) => {
   return fetch(`${API_BASE}/user_ids`).then((response) => {
     if (!response.ok) {
       if (response.status > 500 ){
-        return dispatch({
-          type: actions.FETCH_USERS_ERROR,
-        })
-      } else {
         reran = true
         setTimeout(() => loopFetch(dispatch), 10000)
-        return dispatch({
-          type: actions.FETCH_USERS_ERROR,
-        })
       }
+      return dispatch({
+        type: actions.FETCH_USERS_ERROR,
+      })
     }
-
     return response.json()
     // added () to call .json method to return json object
   }, err => {
     if (!reran) {
-      setTimeout(() => loopFetch(dispatch), 10000)
       reran = true
+      setTimeout(() => loopFetch(dispatch), 10000)
     }
     throw err
   }).then(data => {
@@ -44,8 +39,8 @@ const fetchUserIds = () => (dispatch) => {
     })
   },() => {
     if (!reran) {
-      setTimeout(() => loopFetch(dispatch), 10000)
       reran = true
+      setTimeout(() => loopFetch(dispatch), 10000)
     }
     return dispatch({
       type: actions.FETCH_USERS_ERROR
