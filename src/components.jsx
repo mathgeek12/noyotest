@@ -50,7 +50,7 @@ UserSelectForm = connect(state => state)(UserSelectForm)
 
 
 //--> Events list
-const handleEventToggle = (dispatch, guid) => {
+const handleEventToggle = (dispatch, guid) => e => {
   dispatch({
     type: actions.TOGGLE_EVENT_SELECTION,
     payload: guid
