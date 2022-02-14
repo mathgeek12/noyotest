@@ -5,32 +5,32 @@ const API_BASE = 'http://localhost:27606'
 
 let counter = 0
 
-const loopFetch = (dispatch) => {
-  if (counter < 4) {
-    ++counter
-    dispatch(fetchUserIds())
+const handleUserIdError = (dispatch, retry = false) => {
+  if (retry && counter <= 4 ) {
+    setTimeout(() => dispatch(fetchUserIds()), 1000)
   }
+  return dispatch({
+    type: actions.FETCH_USERS_ERROR,
+  })
 }
 
 const fetchUserIds = () => (dispatch) => {
-  let reran = false
   return fetch(`${API_BASE}/user_ids`).then((response) => {
-    if (!response.ok) {
-      if (response.status > 500 ){
-        reran = true
-        setTimeout(() => loopFetch(dispatch), 10000)
+    if (response.ok) {
+      counter = 0
+    } else {
+      if (response.status >= 500 ){
+        ++counter
+        handleUserIdError(dispatch, true)
+      } else {
+        handleUserIdError(dispatch)
       }
-      return dispatch({
-        type: actions.FETCH_USERS_ERROR,
-      })
     }
     return response.json()
     // added () to call .json method to return json object
   }, err => {
-    if (!reran) {
-      reran = true
-      setTimeout(() => loopFetch(dispatch), 10000)
-    }
+    ++counter
+    handleUserIdError(dispatch, true)
     throw err
   }).then(data => {
     return dispatch({
@@ -38,13 +38,7 @@ const fetchUserIds = () => (dispatch) => {
       payload: data
     })
   },() => {
-    if (!reran) {
-      reran = true
-      setTimeout(() => loopFetch(dispatch), 10000)
-    }
-    return dispatch({
-      type: actions.FETCH_USERS_ERROR
-    })
+    handleUserIdError(dispatch)
   })
 }
 
@@ -55,7 +49,6 @@ const fetchAddresses = (userId) => (dispatch) => {
         type: actions.FETCH_ADDRESS_ERROR,
       })
     }
-
     return response.json()
   }, err => {
     throw err
