@@ -7,7 +7,7 @@ let counter = 0
 
 const handleUserIdError = (dispatch, retry = false) => {
   if (retry && counter <= 4 ) {
-    setTimeout(() => dispatch(fetchUserIds()), 1000)
+    setTimeout(() => dispatch(fetchUserIds()), 10000)
   }
   return dispatch({
     type: actions.FETCH_USERS_ERROR,
